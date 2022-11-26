@@ -76,4 +76,53 @@ RSpec.describe Api::V1::CoursesController, type: :controller do
       end
 
     end
+
+    describe 'update' do
+      course = FactoryBot.create(:course)
+      chapter_one = course.chapters.create(name: "chapter_one")
+      chapter_two = course.chapters.create(name: "chapter_two")
+      unit_one = chapter_one.units.create(name: "unit_one",content: "unit_one")
+      unit_two = chapter_one.units.create(name: "unit_two",content: "unit_two")
+      before do
+        patch :update, params: { id: course.id,course: { name: "hey", teacher: "mao",description: "Hey Apple ! " },
+                              chapter: { name: "update_chapter", position: 1,id: chapter_two.id },
+                              unit: { name: "update_unit",description: "the unit",content: "update_unit", position: 2, id: unit_one.id }
+      }
+      end
+      
+      it 'update record' do
+        course.reload
+        expect(course.name).to eq("hey")
+      end
+
+      it 'chapter position can be change' do
+        chapter_two.reload
+        expect(chapter_two.position).to eq(1)
+      end
+
+      it 'other chapter position will change' do
+        chapter_one.reload
+        expect(chapter_one.position).to eq(2)
+      end
+
+      it 'unit position can be change' do
+        unit_one.reload
+        expect(unit_one.position).to eq(2)
+      end
+
+      it 'other unit position will change' do
+        unit_two.reload
+        expect(unit_two.position).to eq(1)
+      end
+
+
+
+
+
+    end
+
+    describe 'DELETE /destroy' do
+    end
+
+   
 end

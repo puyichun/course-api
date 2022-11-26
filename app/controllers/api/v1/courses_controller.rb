@@ -31,7 +31,6 @@ class Api::V1::CoursesController < ApplicationController
         else
           render json: { chapter_errors: @chapter.errors.full_messages }, status: :unprocessable_entity
         end
-        
       end
     else
       render json: { course_errors: @course.errors.full_messages }, status: :unprocessable_entity
