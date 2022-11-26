@@ -2,8 +2,11 @@ class Api::V1::CoursesController < ApplicationController
   before_action :set_course, only: [:show, :update, :destroy]
 
   def index
-    @courses = Course.all
-    render json: @courses
+    @chapter = Chapter.all.map{ |chapter| {course: chapter.course.name,
+                             chapter: chapter.name,
+                             unit: chapter.units.map{ |unit| unit.name }
+                             }}
+    render json: @chapter
   end
 
   def show
@@ -15,17 +18,20 @@ class Api::V1::CoursesController < ApplicationController
     if @course.save
       params[:chapter].each do |chapter_params|
         @chapter = @course.chapters.new(chapter_params.permit(:name))
-        @chapter.save
-        chapter_params[:unit].each do |unit_params|
-          unit = unit_params.permit(:name, :content, :description)
-          @chapter.units.new(unit)
+        if @chapter.save
+          chapter_params[:unit].each do |unit_params|
+            @unit = @chapter.units.new(unit_params.permit(:name, :content, :description))
+          end
+        else
+          render json: @unit.errors.full_messages
         end
-        @chapter.save
-        debugger
+        if @chapter.save
+        else
+          render json: @chapter.errors.full_messages, status: :unprocessable_entity
+        end
       end
-      render json: @course, status: :created, location: @course
     else
-      render json: @course.errors, status: :unprocessable_entity
+      render json: @course.errors.full_messages, status: :unprocessable_entity
     end
   end
 
