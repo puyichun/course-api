@@ -59,7 +59,7 @@ class Api::V1::CoursesController < ApplicationController
 
   def destroy
     if @course.destroy
-      render json: { state: "課程刪除成功" }
+      render json: { state: "課程刪除成功" }, status: 200
     else
       render json: @course.errors.full_messages
     end

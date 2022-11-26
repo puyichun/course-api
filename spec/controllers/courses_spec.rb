@@ -115,14 +115,14 @@ RSpec.describe Api::V1::CoursesController, type: :controller do
         expect(unit_two.position).to eq(1)
       end
 
-
-
-
-
+ 
+      
     end
 
-    describe 'DELETE /destroy' do
+    it 'destroy' do
+      course_delete = Course.create(name: "test_course", teacher: "test destroy")
+      delete :destroy, params: { id: course_delete.id }
+      expect(Course.find_by(name: course_delete.name).present?).to be false
+      expect(response).to have_http_status(200)
     end
-
-   
 end
