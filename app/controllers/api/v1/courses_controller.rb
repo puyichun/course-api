@@ -40,14 +40,21 @@ class Api::V1::CoursesController < ApplicationController
 
   def update
     render json: { course_errors: @course.errors.full_messages } if not @course.update(course_params)
-    @chapter = @course.chapters.find(params[:chapter][:id])
-    render json: { chapter_errors: @chapter.errors.full_messages }if not @chapter.update(chapter_params)
-    @unit = Unit.find(params[:unit][:id])
-    if @unit.chapter.course == @course
-      render json: { unit_errors: @unit.errors.full_messages } if not @unit.update(unit_params)
-    else
-      render json: { errors: "此單元非本課程的單元" }
+
+    if params[:chapter][:id]
+      @chapter = @course.chapters.find(params[:chapter][:id])
+      render json: { chapter_errors: @chapter.errors.full_messages }if not @chapter.update(chapter_params)
     end
+    
+    if params[:unit][:id]
+      @unit = Unit.find(params[:unit][:id])
+      if @unit.chapter.course == @course
+        render json: { unit_errors: @unit.errors.full_messages } if not @unit.update(unit_params)
+      else
+        render json: { errors: "此單元非本課程的單元" }
+      end
+    end
+   
     render json: { state: "課程修改成功" }, status: 200
   end
 
