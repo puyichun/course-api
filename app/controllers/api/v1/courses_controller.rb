@@ -2,11 +2,12 @@ class Api::V1::CoursesController < ApplicationController
   before_action :set_course, only: [:show, :update, :destroy]
 
   def index
-    @chapter = Chapter.all.map{ |chapter| {course: chapter.course.name,
+    @courses = Chapter.all
+    @chapter = @courses.map{ |chapter| {course: chapter.course.name,
                              chapter: chapter.name,
                              unit: chapter.units.map{ |unit| unit.name }
                              }}
-    render json: @chapter, status: 200
+    render json: { course: @courses,chapter: @chapter }, status: 200
   end
 
   def show
@@ -50,7 +51,11 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def destroy
-    @course.destroy
+    if @course.destroy
+      render json: { state: "課程刪除成功" }
+    else
+      render json: @course.errors.full_messages
+    end
   end
 
   private
