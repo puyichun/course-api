@@ -6,12 +6,12 @@ class Api::V1::CoursesController < ApplicationController
                              chapter: chapter.name,
                              unit: chapter.units.map{ |unit| unit.name }
                              }}
-    render json: @chapter
+    render json: @chapter, status: 200
   end
 
   def show
     @chapter = @course.chapters.map{ |chapter| { chapter: chapter,unit: chapter.units }}
-    render json: @chapter
+    render json: { course: @course,chapters: @chapter }, status: 200
   end
 
   def create
@@ -24,24 +24,29 @@ class Api::V1::CoursesController < ApplicationController
             @unit = @chapter.units.new(unit_params.permit(:name, :content, :description))
           end
         else
-          render json: @unit.errors.full_messages
+          render json: { unit_errors: @unit.errors.full_messages }, status: :unprocessable_entity
         end
         if @chapter.save
         else
-          render json: @chapter.errors.full_messages, status: :unprocessable_entity
+          render json: { chapter_errors: @chapter.errors.full_messages }, status: :unprocessable_entity
         end
       end
     else
-      render json: @course.errors.full_messages, status: :unprocessable_entity
+      render json: { course_errors: @course.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def update
-    if @course.update(course_params)
-      render json: @course
+    render json: { course_errors: @course.errors.full_messages } if not @course.update(course_params)
+    @chapter = @course.chapters.find(params[:chapter][:id])
+    render json: { chapter_errors: @chapter.errors.full_messages }if not @chapter.update(chapter_params)
+    @unit = Unit.find(params[:unit][:id])
+    if @unit.chapter.course == @course
+      render json: { unit_errors: @unit.errors.full_messages } if not @unit.update(unit_params)
     else
-      render json: @course.errors, status: :unprocessable_entity
+      render json: { errors: "此單元非本課程的單元" }
     end
+    render json: { state: "課程修改成功" }, status: 200
   end
 
   def destroy
@@ -59,10 +64,10 @@ class Api::V1::CoursesController < ApplicationController
     end
 
     def chapter_params
-      params.require(:chapter).map { |chapter| chapter.permit(:name,:unit) }
+      params.require(:chapter).permit(:name,:position,:id)
     end
 
-    # def unit_params
-    #   params.require(:unit).map{ |unit| unit.permit(:name, :description, :content,:chapter_name) }
-    # end
+    def unit_params
+      params.require(:unit).permit(:name, :content, :description, :position,:id)
+    end
 end
