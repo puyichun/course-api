@@ -10,7 +10,8 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def show
-    render json: @course
+    @chapter = @course.chapters.map{ |chapter| { chapter: chapter,unit: chapter.units }}
+    render json: @chapter
   end
 
   def create
