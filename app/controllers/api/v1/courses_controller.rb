@@ -53,8 +53,6 @@ class Api::V1::CoursesController < ApplicationController
         render json: { errors: "此單元非本課程的單元" }
       end
     end
-   
-    render json: { state: "課程修改成功" }, status: 200
   end
 
   def destroy
