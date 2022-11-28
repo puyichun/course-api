@@ -46,3 +46,7 @@ gem "net-smtp", "~> 0.3.3"
 gem "acts_as_list", "~> 1.0"
 
 gem "net-pop", "~> 0.1.2"
+
+
+
+gem "net-imap", "~> 0.3.1"
