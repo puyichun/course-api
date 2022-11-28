@@ -1,13 +1,5 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-
-在這份專案中你遇到的困難、問題，以及解決的方法
-
+Ruby  版本 3.1.2
+Rails 版本 6.1.7
 
 本專案有三個model，課程course、章節chapter、單元unit
 
@@ -29,9 +21,10 @@ https://pu-course-api.herokuapp.com/api/v1/courses
 
 JSON範例：
 
-{ "course" : {"name" : "課程名稱", "teacher" : "講師名稱", "description" : 課程說明" },
+{ "course" : { "name": "課程名稱", "teacher": "講師名稱", "description": 課程說明" },
   "chapter": [{"name": "章節名稱1",
-               "unit": [{"name": "單元名稱1", "description": "單元說明", "content": "單元內容 (純文字的文章內容) "},{"name": "第二單元", "description": "單元說明", "content": "單元內容"}]},
+               "unit": [{ "name": "單元名稱1", "description": "單元說明", "content": "單元內容 (純文字的文章內容) "},
+                        {" name": "第二單元", "description": "單元說明", "content": "單元內容"}]},
               {"name": "章節名稱2",
                "unit": [{"name": "第三單元", "description": "單元說明", "content": "單元內容"}]}]}]
 }
