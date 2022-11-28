@@ -2,12 +2,11 @@ class Api::V1::CoursesController < ApplicationController
   before_action :set_course, only: [:show, :update, :destroy]
 
   def index
-    @courses = Chapter.all
-    @chapters = @courses.map{ |chapter| {course: chapter.course.name,
-                             chapter: chapter.name,
-                             unit: chapter.units.map{ |unit| unit.name }
-                             }}
-    render json: { course: @courses,chapter: @chapters }, status: 200
+    @courses = Course.includes(:chapters)
+    @course = @courses.map{ |course| { course_name: course.name, chapter: course.chapters.map{ 
+      |chapter| { chapter_name: chapter.name ,unit: chapter.units.map{ |unit| unit.name }}
+     } } }
+     render json: @course, status: 200
   end
 
   def show
