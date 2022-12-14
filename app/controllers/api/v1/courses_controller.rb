@@ -4,7 +4,7 @@ class Api::V1::CoursesController < ApplicationController
   def index
     @courses = Course.includes(:chapters)
     @course = @courses.map{ |course| { course_name: course.name, chapter: course.chapters.map{ 
-      |chapter| { chapter_name: chapter.name ,unit: chapter.units.map{ |unit| unit.name }}
+      |chapter| { chapter_name: chapter.name ,unit: chapter.units.map{ |unit| { unit_name: unit.name }}}
      } } }
      render json: @course, status: 200
   end
