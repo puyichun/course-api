@@ -15,21 +15,12 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def create
-    debugger
     @course = Course.new(course_params)
     if @course.save
       params[:chapter].each do |chapter_params|
-        @chapter = @course.chapters.new(chapter_params.permit(:name))
-        if @chapter.save
-          chapter_params[:unit].each do |unit_params|
-            @unit = @chapter.units.new(unit_params.permit(:name, :content, :description))
-            if @unit.save
-            else
-              render json: { unit_errors: @unit.errors.full_messages }, status: :unprocessable_entity
-            end
-          end
-        else
-          render json: { chapter_errors: @chapter.errors.full_messages }, status: :unprocessable_entity
+        @chapter = @course.chapters.create(chapter_params.permit(:name))
+        chapter_params[:unit].each do |unit_params|
+          @unit = @chapter.units.create(unit_params.permit(:name, :content, :description))
         end
       end
     else
