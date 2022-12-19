@@ -15,6 +15,7 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def create
+    debugger
     @course = Course.new(course_params)
     if @course.save
       params[:chapter].each do |chapter_params|
@@ -80,3 +81,4 @@ class Api::V1::CoursesController < ApplicationController
       params.require(:unit).permit(:name, :content, :description, :position,:id)
     end
 end
+
