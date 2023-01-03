@@ -2,11 +2,7 @@ class Api::V1::CoursesController < ApplicationController
   before_action :set_course, only: [:show, :update, :destroy]
 
   def index
-    @courses = Course.includes(:chapters)
-    @course = @courses.map{ |course| { course_name: course.name, chapter: course.chapters.map{ 
-      |chapter| { chapter_name: chapter.name ,unit: chapter.units.map{ |unit| { unit_name: unit.name }}}
-     } } }
-     render json: @course, status: 200
+    @courses = Course.includes(chapters: :  :unit)
   end
 
   def show
@@ -15,6 +11,7 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def create
+    debugger
     @course = Course.new(course_params)
     if @course.save
       params[:chapter].each do |chapter_params|
@@ -65,7 +62,7 @@ class Api::V1::CoursesController < ApplicationController
     end
 
     def chapter_params
-      params.require(:chapter).permit(:name,:position,:id)
+      params.require(:chapter).permit(:name,:position,:id,unit_attributes:[ :name, :content, :description ])
     end
 
     def unit_params
