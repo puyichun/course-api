@@ -6,8 +6,6 @@ class Api::V1::CoursesController < ApplicationController
   end
 
   def show
-    @chapter = @course.chapters.map{ |chapter| { chapter: chapter,unit: chapter.units }}
-    render json: { course: @course,chapters: @chapter }, status: 200
   end
 
   def create
